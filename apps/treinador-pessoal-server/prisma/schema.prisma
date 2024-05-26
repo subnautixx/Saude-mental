@@ -1,0 +1,112 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model ExercCio {
+  createdAt           DateTime             @default(now())
+  desempenhoDoUsuRios DesempenhoDoUsuRio[]
+  duraOMinutos        Int?
+  id                  String               @id @default(cuid())
+  nome                String?
+  planoDeTreino       PlanoDeTreino?       @relation(fields: [planoDeTreinoId], references: [id])
+  planoDeTreinoId     String?
+  tipo                String?
+  updatedAt           DateTime             @updatedAt
+}
+
+model DesempenhoDoUsuRio {
+  createdAt  DateTime  @default(now())
+  data       DateTime?
+  exercCio   ExercCio? @relation(fields: [exercCioId], references: [id])
+  exercCioId String?
+  id         String    @id @default(cuid())
+  observaEs  String?
+  updatedAt  DateTime  @updatedAt
+  usuRio     UsuRio?   @relation(fields: [usuRioId], references: [id])
+  usuRioId   String?
+}
+
+model UsuRio {
+  compartilhamentoSocials    CompartilhamentoSocial[]
+  createdAt                  DateTime                 @default(now())
+  desempenhoDoUsuRios        DesempenhoDoUsuRio[]
+  email                      String?
+  id                         String                   @id @default(cuid())
+  idade                      Int?
+  metasFitnesItems           MetasFitnes[]
+  nome                       String?
+  planoDeTreinos             PlanoDeTreino[]
+  realizaEsERecompensasItems RealizaEsERecompensas[]
+  updatedAt                  DateTime                 @updatedAt
+}
+
+model PlanoDeTreino {
+  createdAt    DateTime   @default(now())
+  descriO      String?
+  duraOSemanas Int?
+  exercCios    ExercCio[]
+  id           String     @id @default(cuid())
+  tTulo        String?
+  updatedAt    DateTime   @updatedAt
+  usuRio       UsuRio?    @relation(fields: [usuRioId], references: [id])
+  usuRioId     String?
+}
+
+model BibliotecaDeExercCios {
+  categoria String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  instruEs  String?
+  nome      String?
+  updatedAt DateTime @updatedAt
+  vDeoLink  String?
+}
+
+model PerfilDoUsuRio {
+  altura             Float?
+  createdAt          DateTime                              @default(now())
+  id                 String                                @id @default(cuid())
+  nVelAtualDeFitness EnumPerfilDoUsuRioNVelAtualDeFitness?
+  objetivosDeFitness String?
+  peso               Float?
+  updatedAt          DateTime                              @updatedAt
+}
+
+model RealizaEsERecompensas {
+  createdAt  DateTime @default(now())
+  id         String   @id @default(cuid())
+  realizaO   String?
+  recompensa String?
+  updatedAt  DateTime @updatedAt
+  usuRio     UsuRio?  @relation(fields: [usuRioId], references: [id])
+  usuRioId   String?
+}
+
+model MetasFitnes {
+  createdAt        DateTime @default(now())
+  id               String   @id @default(cuid())
+  metaDeCurtoPrazo String?
+  metaDeLongoPrazo String?
+  updatedAt        DateTime @updatedAt
+  usuRio           UsuRio?  @relation(fields: [usuRioId], references: [id])
+  usuRioId         String?
+}
+
+model CompartilhamentoSocial {
+  createdAt  DateTime @default(now())
+  id         String   @id @default(cuid())
+  progresso  Json?
+  redeSocial String?
+  updatedAt  DateTime @updatedAt
+  usuRio     UsuRio?  @relation(fields: [usuRioId], references: [id])
+  usuRioId   String?
+}
+
+enum EnumPerfilDoUsuRioNVelAtualDeFitness {
+  Option1
+}
