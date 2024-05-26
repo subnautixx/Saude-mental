@@ -1,0 +1,99 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model UsuRio {
+  avaliaOPessoals       AvaliaOPessoal[]
+  createdAt             DateTime               @default(now())
+  email                 String?
+  id                    String                 @id @default(cuid())
+  idade                 Int?
+  meditaOs              MeditaO[]
+  nome                  String?
+  recomendaOs           RecomendaO[]
+  recursoAdicionals     RecursoAdicional[]
+  sessODeMeditaOGuiadas SessODeMeditaOGuiada[]
+  sessODeTerapias       SessODeTerapia[]
+  updatedAt             DateTime               @updatedAt
+}
+
+model SessODeTerapia {
+  createdAt DateTime  @default(now())
+  data      DateTime?
+  id        String    @id @default(cuid())
+  notas     String?
+  tipo      String?
+  updatedAt DateTime  @updatedAt
+  usuRio    UsuRio?   @relation(fields: [usuRioId], references: [id])
+  usuRioId  String?
+}
+
+model MeditaO {
+  createdAt    DateTime @default(now())
+  descriO      String?
+  duraOMinutos Int?
+  id           String   @id @default(cuid())
+  nome         String?
+  updatedAt    DateTime @updatedAt
+  usuRio       UsuRio?  @relation(fields: [usuRioId], references: [id])
+  usuRioId     String?
+}
+
+model RecomendaO {
+  createdAt DateTime @default(now())
+  descriO   String?
+  id        String   @id @default(cuid())
+  tipo      String?
+  tTulo     String?
+  updatedAt DateTime @updatedAt
+  usuRio    UsuRio?  @relation(fields: [usuRioId], references: [id])
+  usuRioId  String?
+}
+
+model SessODeMeditaOGuiada {
+  createdAt DateTime                      @default(now())
+  duraO     Int?
+  id        String                        @id @default(cuid())
+  nome      String?
+  objetivo  String?
+  tipo      EnumSessODeMeditaOGuiadaTipo?
+  updatedAt DateTime                      @updatedAt
+  usuRio    UsuRio?                       @relation(fields: [usuRioId], references: [id])
+  usuRioId  String?
+}
+
+model AvaliaOPessoal {
+  avaliaOMentalRegular Json?
+  checkInsDiRios       Boolean?
+  conteDoPersonalizado Json?
+  createdAt            DateTime @default(now())
+  id                   String   @id @default(cuid())
+  updatedAt            DateTime @updatedAt
+  usuRio               UsuRio?  @relation(fields: [usuRioId], references: [id])
+  usuRioId             String?
+}
+
+model RecursoAdicional {
+  createdAt     DateTime                           @default(now())
+  descriO       String?
+  id            String                             @id @default(cuid())
+  link          String?
+  nomeDoRecurso String?
+  tipoDeRecurso EnumRecursoAdicionalTipoDeRecurso?
+  updatedAt     DateTime                           @updatedAt
+  usuRio        UsuRio?                            @relation(fields: [usuRioId], references: [id])
+  usuRioId      String?
+}
+
+enum EnumSessODeMeditaOGuiadaTipo {
+  Option1
+}
+
+enum EnumRecursoAdicionalTipoDeRecurso {
+  Option1
+}
